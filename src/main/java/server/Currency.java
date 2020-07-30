@@ -1,4 +1,6 @@
 package server;
 
-public class Currency {
+public enum Currency {
+    USD,
+    RUR
 }
