@@ -1,13 +1,13 @@
 package ru.sbrf.atm.client;
 
 public class User {
-    private long clientNumber;
+    private Card card;
 
-    public long getClientNumber() {
-        return clientNumber;
+    public Card getCard() {
+        return card;
     }
 
-    public User(long clientNumber) {
-        this.clientNumber = clientNumber;
+    public User(Card card) {
+        this.card = card;
     }
 }
