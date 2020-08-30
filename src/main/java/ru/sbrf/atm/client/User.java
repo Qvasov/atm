@@ -2,13 +2,12 @@ package ru.sbrf.atm.client;
 
 public class User {
     private long clientNumber;
-    private Auth method;
 
-    public Auth getMethod() {
-        return method;
+    public long getClientNumber() {
+        return clientNumber;
     }
 
-    public void setMethod(Auth method) {
-        this.method = method;
+    public User(long clientNumber) {
+        this.clientNumber = clientNumber;
     }
 }
