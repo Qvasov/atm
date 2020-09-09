@@ -1,19 +1,32 @@
 package ru.sbrf.atm.server;
 
-import ru.sbrf.atm.client.Card;
+import lombok.Getter;
 
-import java.util.Set;
-
-public class Account {
+public abstract class Account {
+    private long accountNumbers;
+    @Getter
     private final String number;
-    private final Client owner;
+    private final long ownerNumber;
+    @Getter
+    private long balanceRub;
+    @Getter
+    private long balanceKop;
+    @Getter
     private final Currency currency;
-    private long balance;
-    private Set<Card> cards;
 
-    public Account(String number, Currency currency, Client owner) {
-        this.number = number;
+    public Account(Currency currency, long ownerNumber) {
+        this.number = String.format("%020d", this.getNewAccountNumber());
+        this.balanceRub = 0;
+        this.balanceKop = 0;
         this.currency = currency;
-        this.owner = owner;
+        this.ownerNumber = ownerNumber;
+    }
+
+    /**
+     *
+     * @return Получает новый номер карты
+     */
+    public long getNewAccountNumber() {
+        return ++accountNumbers;
     }
 }
