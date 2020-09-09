@@ -15,6 +15,18 @@ public class ATM {
 		this.bank = bank;
 	}
 
+	/**
+	 * Метод для аутификация на уровне банкомата.
+	 *
+	 *
+	 * Получает из банка, зарегестрированные методы аутентификации на конкретного пользователя,
+	 * и сравнивает метод аутентификации пользователя с зарегестрированными. Если способ зарегестрирован,
+	 * происходит аутентификации на уровне банка. В другом случае - ошибка аутентификации.
+	 *
+	 * @param user пользователь, который производит аутентификацию
+	 * @param authMethod метод, с помощью которого происходит аутентификация
+	 * @return true - если аутентификация прошла успешна. false в обратном случае.
+	 */
 	public boolean authentication(User user, AuthMethod authMethod) {
 		boolean authResult = false;
 		try {
@@ -23,7 +35,7 @@ public class ATM {
 			try {
 				// Аутентификация клиента с помощью выбранного метода аутентификации
 				if (userAuthMethods.contains(authMethod)) {
-					//Возвращает true если аутентификация прошла успешно
+					//если аутентификация прошла успешно authResult устанавливается в true
 					authResult = bank.authentication(user.getCard().getClientNumber(), authMethod);
 				} else
 					throw new AuthMethodException("Ошибка способа аутентификации");
@@ -36,8 +48,8 @@ public class ATM {
 		return authResult;
 	}
 
-	public long getBalance(long clientNumber, String accountNumber) {
-		return bank.getBalance(clientNumber, accountNumber);
+	public String getBalance(User user) {
+		return bank.getBalance(user.getCard().getClientNumber(), user.getCard().getAccountNumber());
 	}
 
 }

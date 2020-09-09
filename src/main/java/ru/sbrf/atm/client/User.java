@@ -1,13 +1,10 @@
 package ru.sbrf.atm.client;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
 public class User {
+    @Getter
     private Card card;
-
-    public Card getCard() {
-        return card;
-    }
-
-    public User(Card card) {
-        this.card = card;
-    }
 }
