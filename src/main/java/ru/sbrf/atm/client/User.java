@@ -1,14 +1,10 @@
 package ru.sbrf.atm.client;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
 public class User {
-    private long clientNumber;
-    private Auth method;
-
-    public Auth getMethod() {
-        return method;
-    }
-
-    public void setMethod(Auth method) {
-        this.method = method;
-    }
+    @Getter
+    private Card card;
 }

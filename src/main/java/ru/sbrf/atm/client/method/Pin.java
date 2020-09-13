@@ -1,6 +1,13 @@
 package ru.sbrf.atm.client.method;
 
-import ru.sbrf.atm.client.Auth;
+import lombok.AllArgsConstructor;
+import ru.sbrf.atm.interfaces.AuthMethod;
 
-public class Pin extends Auth {
+@AllArgsConstructor
+public class Pin implements AuthMethod {
+	private String pinCode;
+
+	public String getCode() {
+		return pinCode;
+	}
 }
