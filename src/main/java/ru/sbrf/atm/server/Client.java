@@ -13,8 +13,8 @@ public class Client<E extends Account> {
 	private Map<String, Account> accounts;
 	private Map<AuthMethod, Secret> secrets;
 
-	public Client() {
-		this.number = Bank.getNewClientNumber();
+	public Client(long clientNumber) {
+		this.number = clientNumber;
 		this.accounts = new HashMap<>();
 		this.secrets = new HashMap<>();
 	}

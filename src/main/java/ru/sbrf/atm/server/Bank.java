@@ -1,5 +1,8 @@
 package ru.sbrf.atm.server;
 
+import ru.sbrf.atm.client.Card;
+import ru.sbrf.atm.client.Passport;
+import ru.sbrf.atm.client.method.Pin;
 import ru.sbrf.atm.interfaces.AuthMethod;
 import ru.sbrf.atm.exceptions.ClientException;
 import ru.sbrf.atm.exceptions.PasswordException;
@@ -8,9 +11,10 @@ import java.util.*;
 
 public class Bank {
     private final String name;
+    private static Map<Passport, Client<? extends Account>> clients;
+
     private long cardNumbers;
-    private static long clientNumbers;
-    private static Map<Long, Client<? extends Account>> clients;
+    private long clientNumbers;
 
     public Bank(String name) {
         this.name = name;
@@ -19,43 +23,60 @@ public class Bank {
     }
 
     /**
+     * Метод создаёт карту по паспорту клиента и наименованию валюты
+     * @param currency валюта счёта
+     * @param passport паспорт клиента
+     * @return созданную карту
+     */
+    public Card createCard(Currency currency, Passport passport) {
+        String cardNumber = String.format("%016d", this.getNewCardNumber());
+        Client<? extends Account> client = this.getClient(passport);
+        SavingAccount account = new SavingAccount(currency, client.getNumber());
+        client.putAccount(account);
+        client.putSecret(new Pin("1234"));
+        return new Card(cardNumber, client.getNumber(), account.getNumber());
+    }
+
+    public Card createCard(Passport passport) {
+        return createCard(Currency.RUR, passport);
+    }
+
+    /**
      *
      * @return Получает новый номер карты
      */
-    public long getNewCardNumber() {
+    private long getNewCardNumber() {
         return ++cardNumbers;
     }
 
     /**
-     *
-     * @return Получает новый номер клиента
-     */
-    public static long getNewClientNumber() {
-        return ++clientNumbers;
-    }
-
-    /**
-     * Получает клиента по номеру клинета
-     * @param clientNumber номер клиента
+     * Получает клиента по данным паспорта, если его нет то создаёт кладёт клиента в базу банка
+     * @param passport паспорт клиента
      * @return Полученный клиент из базы банка
      */
-    public Client<? extends Account> getClient(Long clientNumber) {
-        if (clientNumber == null)
-            return createClient();
-        else if (clients.containsKey(clientNumber))
-            return clients.get(clientNumber);
+    public Client<? extends Account> getClient(Passport passport) {
+        if (clients.containsKey(passport))
+            return clients.get(passport);
         else
-            throw new ClientException("Клиента с таким номером не существует");
+            return createClient(passport);
     }
 
     /**
      * Создаёт клиента и сохраняет его в базе банка
      * @return Созданный клиент
      */
-    public Client<? extends Account> createClient() {
-        Client<SavingAccount> client = new Client<>();
-        clients.put(client.getNumber(), client);
+    public Client<? extends Account> createClient(Passport passport) {
+        Client<SavingAccount> client = new Client<>(getNewClientNumber());
+        clients.put(passport, client);
         return client;
+    }
+
+    /**
+     *
+     * @return Получает новый номер клиента
+     */
+    public long getNewClientNumber() {
+        return this.clientNumbers++;
     }
 
     /**
@@ -65,6 +86,7 @@ public class Bank {
      * @return Множество зарегестрированных способов аутентификации
      */
     public Set<AuthMethod> getUserAuthMethods(long clientNumber) {
+        //TODO
         if (clients.containsKey(clientNumber)) {
             return clients.get(clientNumber).getAuthMethods();
         } else
