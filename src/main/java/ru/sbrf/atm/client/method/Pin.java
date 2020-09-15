@@ -7,6 +7,7 @@ import ru.sbrf.atm.interfaces.AuthMethod;
 public class Pin implements AuthMethod {
 	private String pinCode;
 
+	@Override
 	public String getCode() {
 		return pinCode;
 	}

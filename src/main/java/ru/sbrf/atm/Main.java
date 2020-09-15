@@ -26,5 +26,20 @@ public class Main {
         //Сессия
         if (atm.authentication(user, authMethod))
             atm.getBalance(user);
+
+        //карту и ее данные использовать как логическую связь между системами
+        // 19.34 разбить прямые ссылки. Оссобено между картой и банкоматом
+        //карту создаёт банк и отдаёт пользователю
+        //про дезайнить в соответсвии с реальной ситуацией
+        // сделать в карте класс реквизиты (номер счета номер пользователя)
+        //функцианальный интерфейс для authmethod
+        //переделать Long в long по возможности (жанглировать примитивами а не объектами)
+        //comtains key переделать так как гет возвращает null
+        //проанализировать null в в методе getClient класса Bank
+        //currency name а не to String
+        
+        user.autethication(authMethod)
+        user.getbalance(card clientnumber)
+        System.out.println(balance);
     }
 }
