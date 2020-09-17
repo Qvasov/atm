@@ -1,17 +1,17 @@
 package ru.sbrf.atm.server;
 
 import lombok.Getter;
+import ru.sbrf.atm.client.method.Pin;
 import ru.sbrf.atm.interfaces.AuthMethod;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Client<E extends Account> {
 	@Getter
 	private long number;
 	private Map<String, Account> accounts;
-	private Map<AuthMethod, Secret> secrets;
+	private Map<Class<? extends AuthMethod>, Secret> secrets;
 
 	public Client(long clientNumber) {
 		this.number = clientNumber;
@@ -25,6 +25,7 @@ public class Client<E extends Account> {
 
 	/**
 	 * Возвращает баланс с конкретного счета
+	 *
 	 * @param accountNumber номер счета
 	 * @return Значение баланса с валютой
 	 */
@@ -37,17 +38,13 @@ public class Client<E extends Account> {
 	}
 
 	public void putSecret(AuthMethod authMethod) {
-		if (!secrets.containsKey(authMethod))
-			secrets.put(authMethod, Secret.generateSecret(authMethod.getCode()));
+		if (!secrets.containsKey(authMethod.getClass()))
+			secrets.put(authMethod.getClass(), Secret.generateSecret(authMethod.getCode()));
 		else
-			secrets.replace(authMethod, Secret.generateSecret(authMethod.getCode()));
-	}
-
-	public Set<AuthMethod> getAuthMethods() {
-		return secrets.keySet();
+			secrets.replace(authMethod.getClass(), Secret.generateSecret(authMethod.getCode()));
 	}
 
 	public Secret getAuthMethod(AuthMethod authMethod) {
-		return secrets.get(authMethod);
+		return secrets.get(authMethod.getClass());
 	}
 }

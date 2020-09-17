@@ -3,10 +3,12 @@ package ru.sbrf.atm.client;
 import ru.sbrf.atm.exceptions.CardException;
 import ru.sbrf.atm.interfaces.AuthMethod;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
 public class User {
+	@NotNull
 	private Passport passport;
 	private Map<String, Card> wallet;
 
@@ -21,7 +23,7 @@ public class User {
 	}
 
 	public boolean autethication(String cardNumber, AuthMethod authMethod, ATM atm) {
-		Card card = wallet.get(cardNumber);
+		Card card = wallet.get(cardNumber.replaceAll("\\s+", ""));
 		if (card == null)
 			throw new CardException("В кошелке нет карты с таким номером.");
         return atm.authentication(card, authMethod);

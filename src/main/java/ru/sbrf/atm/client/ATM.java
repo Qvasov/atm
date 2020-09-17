@@ -8,9 +8,11 @@ import ru.sbrf.atm.exceptions.PasswordException;
 import ru.sbrf.atm.server.Bank;
 import ru.sbrf.atm.server.Currency;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 public class ATM {
+	@NotNull
 	private Bank bank;
 	private Card insertedCard;
 
@@ -20,34 +22,28 @@ public class ATM {
 
 	/**
 	 * Метод для аутификация на уровне банкомата.
-	 *
-	 *
+	 * <p>
+	 * <p>
 	 * Получает из банка, зарегестрированные методы аутентификации на конкретного пользователя,
 	 * и сравнивает метод аутентификации пользователя с зарегестрированными. Если способ зарегестрирован,
 	 * происходит аутентификации на уровне банка. В другом случае - ошибка аутентификации.
 	 *
-	 * @param card карта, с которой пользователь производит аутентификацию
+	 * @param card       карта, с которой пользователь производит аутентификацию
 	 * @param authMethod метод, с помощью которого происходит аутентификация
 	 * @return true - если аутентификация прошла успешна. false в обратном случае.
 	 */
 	public boolean authentication(Card card, AuthMethod authMethod) {
 		boolean authResult = false;
 		insertedCard = card;
+
 		try {
-			// Получение зарегестрированных способов аутентификации с сервера для конкретного клиента, если он клиент нашего банка
-			Set<AuthMethod> userAuthMethods = bank.getUserAuthMethods(card.getClientNumber());
-			try {
-				// Аутентификация клиента с помощью выбранного метода аутентификации
-				if (userAuthMethods.contains(authMethod)) {
-					//если аутентификация прошла успешно authResult устанавливается в true
-					authResult = bank.authentication(card.getClientNumber(), authMethod);
-				} else
-					throw new AuthMethodException("Ошибка способа аутентификации");
-			} catch (PasswordException p) {
-				// Неправильный пин. Код обработки неправельного введеного пароля.
-			}
+			authResult = bank.authentication(card.getClientNumber(), authMethod);
 		} catch (ClientException c) {
 			//Код обработки внешнего клиента (из другого банка)
+		} catch (AuthMethodException a) {
+			// Код обработки не существующего способа аутентификации.
+		} catch (PasswordException p) {
+			// Неправильный пин. Код обработки неправельного введеного пароля.
 		}
 		return authResult;
 	}
@@ -60,15 +56,15 @@ public class ATM {
 			throw new ATMException("Карта не вставлена в банкомат");
 	}
 
-	public Card orderCard(Currency currency, Passport passport){
+	public Card orderCard(Currency currency, Passport passport) {
 		return bank.createCard(currency, passport);
 	}
-	public Card orderCard(Passport passport){
+
+	public Card orderCard(Passport passport) {
 		return orderCard(Currency.RUR, passport);
 	}
 
 	public String getBalance() {
 		return bank.getBalance(insertedCard.getClientNumber(), insertedCard.getAccountNumber());
 	}
-
 }

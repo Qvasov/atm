@@ -1,12 +1,6 @@
 package ru.sbrf.atm.client;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ru.sbrf.atm.client.method.Pin;
-import ru.sbrf.atm.server.Account;
-import ru.sbrf.atm.server.Bank;
-import ru.sbrf.atm.server.Currency;
-import ru.sbrf.atm.server.SavingAccount;
 
 /**
  * Создаёт карту, которая содержит номер счета и номер клинта которому принаджлежит.
