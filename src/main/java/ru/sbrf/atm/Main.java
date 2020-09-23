@@ -1,30 +1,23 @@
 package ru.sbrf.atm;
 
-import ru.sbrf.atm.client.ATM;
-import ru.sbrf.atm.client.User;
-import ru.sbrf.atm.client.Card;
-import ru.sbrf.atm.client.method.Pin;
+import client.ATM;
+import client.Passport;
+import client.User;
+import client.method.Pin;
 import ru.sbrf.atm.server.Bank;
 
 public class Main {
-    public static void main(String[] args) {
-        //предварительные данные без аргументов, для общего дизайна. Без углубоения в реализацию банка, клиентов, способов авторизации.
-        Bank bank = new Bank("ПАО Сбербанк");
-        User user = new User(new Card(bank));
-        ATM atm = new ATM(bank);
-        Pin authMethod = new Pin("1234");
+	public static void main(String[] args) {
+		//предварительные данные без аргументов, для общего дизайна. Без углубоения в реализацию банка, клиентов, способов авторизации.
+		Bank bank = new Bank("ПАО Сбербанк");
+		ATM atm = new ATM(bank);
+		User user = new User(new Passport("0102","334455"));
+		user.orderCard(atm);
 
-        //указать пинкод при создании карты
-        
-        //переделать хранение в банке счетов. 1 сущность != несколько массивов 21:02
-        //стрим клиенты стрим сечта работа
-        //optional почитать
-        //Collections почитать
-
-        //дополнить в резюме про автоматизацию тестирования devops 21:40 урок 14 или 15
-
-        //Сессия
-        if (atm.authentication(user, authMethod))
-            atm.getBalance(user);
-    }
+		if (user.autethication("0000 0000 0000 0001", new Pin("1234"), atm)) {
+			String balance = user.getBalance(atm);
+			System.out.println(balance);
+			user.logout(atm);
+		}
+	}
 }

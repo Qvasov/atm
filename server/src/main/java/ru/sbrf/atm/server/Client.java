@@ -1,20 +1,21 @@
 package ru.sbrf.atm.server;
 
 import lombok.Getter;
-import ru.sbrf.atm.interfaces.AuthMethod;
+import org.springframework.stereotype.Component;
+import ru.sbrf.atm.interfaces.IAuthMethod;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
+@Component
 public class Client<E extends Account> {
 	@Getter
 	private long number;
 	private Map<String, Account> accounts;
-	private Map<AuthMethod, Secret> secrets;
+	private Map<Class<? extends IAuthMethod>, Secret> secrets;
 
-	public Client() {
-		this.number = Bank.getNewClientNumber();
+	public Client(long clientNumber) {
+		this.number = clientNumber;
 		this.accounts = new HashMap<>();
 		this.secrets = new HashMap<>();
 	}
@@ -25,6 +26,7 @@ public class Client<E extends Account> {
 
 	/**
 	 * Возвращает баланс с конкретного счета
+	 *
 	 * @param accountNumber номер счета
 	 * @return Значение баланса с валютой
 	 */
@@ -33,21 +35,17 @@ public class Client<E extends Account> {
 		return String.format("%s,%s %s",
 				account.getBalanceRub(),
 				account.getBalanceKop(),
-				account.getCurrency().toString());
+				account.getECurrency().toString());
 	}
 
-	public void putSecret(AuthMethod authMethod) {
-		if (!secrets.containsKey(authMethod))
-			secrets.put(authMethod, Secret.generateSecret(authMethod.getCode()));
+	public void putSecret(IAuthMethod authMethod) {
+		if (!secrets.containsKey(authMethod.getClass()))
+			secrets.put(authMethod.getClass(), Secret.generateSecret(authMethod.getCode()));
 		else
-			secrets.replace(authMethod, Secret.generateSecret(authMethod.getCode()));
+			secrets.replace(authMethod.getClass(), Secret.generateSecret(authMethod.getCode()));
 	}
 
-	public Set<AuthMethod> getAuthMethods() {
-		return secrets.keySet();
-	}
-
-	public Secret getAuthMethod(AuthMethod authMethod) {
-		return secrets.get(authMethod);
+	public Secret getAuthMethod(IAuthMethod authMethod) {
+		return secrets.get(authMethod.getClass());
 	}
 }

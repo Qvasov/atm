@@ -1,5 +1,6 @@
 package ru.sbrf.atm.interfaces;
 
-public interface AuthMethod {
+@FunctionalInterface
+public interface IAuthMethod {
 	String getCode();
 }
