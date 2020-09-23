@@ -1,17 +1,18 @@
 package ru.sbrf.atm.server;
 
 import lombok.Getter;
-import ru.sbrf.atm.client.method.Pin;
-import ru.sbrf.atm.interfaces.AuthMethod;
+import org.springframework.stereotype.Component;
+import ru.sbrf.atm.interfaces.IAuthMethod;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class Client<E extends Account> {
 	@Getter
 	private long number;
 	private Map<String, Account> accounts;
-	private Map<Class<? extends AuthMethod>, Secret> secrets;
+	private Map<Class<? extends IAuthMethod>, Secret> secrets;
 
 	public Client(long clientNumber) {
 		this.number = clientNumber;
@@ -34,17 +35,17 @@ public class Client<E extends Account> {
 		return String.format("%s,%s %s",
 				account.getBalanceRub(),
 				account.getBalanceKop(),
-				account.getCurrency().toString());
+				account.getECurrency().toString());
 	}
 
-	public void putSecret(AuthMethod authMethod) {
+	public void putSecret(IAuthMethod authMethod) {
 		if (!secrets.containsKey(authMethod.getClass()))
 			secrets.put(authMethod.getClass(), Secret.generateSecret(authMethod.getCode()));
 		else
 			secrets.replace(authMethod.getClass(), Secret.generateSecret(authMethod.getCode()));
 	}
 
-	public Secret getAuthMethod(AuthMethod authMethod) {
+	public Secret getAuthMethod(IAuthMethod authMethod) {
 		return secrets.get(authMethod.getClass());
 	}
 }

@@ -1,16 +1,17 @@
 package ru.sbrf.atm.client;
 
+import org.springframework.stereotype.Component;
+import ru.sbrf.atm.enums.ECurrency;
+import ru.sbrf.atm.interfaces.IAuthMethod;
 import ru.sbrf.atm.exceptions.ATMException;
-import ru.sbrf.atm.interfaces.AuthMethod;
 import ru.sbrf.atm.exceptions.AuthMethodException;
 import ru.sbrf.atm.exceptions.ClientException;
 import ru.sbrf.atm.exceptions.PasswordException;
 import ru.sbrf.atm.server.Bank;
-import ru.sbrf.atm.server.Currency;
 
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
+@Component
 public class ATM {
 	@NotNull
 	private Bank bank;
@@ -29,15 +30,15 @@ public class ATM {
 	 * происходит аутентификации на уровне банка. В другом случае - ошибка аутентификации.
 	 *
 	 * @param card       карта, с которой пользователь производит аутентификацию
-	 * @param authMethod метод, с помощью которого происходит аутентификация
+	 * @param IAuthMethod метод, с помощью которого происходит аутентификация
 	 * @return true - если аутентификация прошла успешна. false в обратном случае.
 	 */
-	public boolean authentication(Card card, AuthMethod authMethod) {
+	public boolean authentication(Card card, IAuthMethod IAuthMethod) {
 		boolean authResult = false;
 		insertedCard = card;
 
 		try {
-			authResult = bank.authentication(card.getClientNumber(), authMethod);
+			authResult = bank.authentication(card.getClientNumber(), IAuthMethod);
 		} catch (ClientException c) {
 			//Код обработки внешнего клиента (из другого банка)
 		} catch (AuthMethodException a) {
@@ -56,12 +57,12 @@ public class ATM {
 			throw new ATMException("Карта не вставлена в банкомат");
 	}
 
-	public Card orderCard(Currency currency, Passport passport) {
-		return bank.createCard(currency, passport);
+	public Card orderCard(ECurrency ECurrency, Passport passport) {
+		return bank.createCard(ECurrency, passport);
 	}
 
 	public Card orderCard(Passport passport) {
-		return orderCard(Currency.RUR, passport);
+		return orderCard(ECurrency.RUR, passport);
 	}
 
 	public String getBalance() {

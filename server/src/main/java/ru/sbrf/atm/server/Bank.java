@@ -1,17 +1,20 @@
 package ru.sbrf.atm.server;
 
-import ru.sbrf.atm.client.Card;
-import ru.sbrf.atm.client.Passport;
-import ru.sbrf.atm.client.method.Pin;
+import client.Card;
+import client.Passport;
+import client.method.Pin;
+import org.springframework.stereotype.Component;
+import ru.sbrf.atm.enums.ECurrency;
 import ru.sbrf.atm.exceptions.AuthMethodException;
 import ru.sbrf.atm.exceptions.ClientException;
 import ru.sbrf.atm.exceptions.PasswordException;
-import ru.sbrf.atm.interfaces.AuthMethod;
+import ru.sbrf.atm.interfaces.IAuthMethod;
 
 import javax.validation.constraints.NotBlank;
 import java.util.HashMap;
-import java.util.Map;
 
+
+@Component
 public class Bank {
 	@NotBlank
 	private final String name;
@@ -27,21 +30,21 @@ public class Bank {
 	/**
 	 * Метод создаёт карту по паспорту клиента и наименованию валюты
 	 *
-	 * @param currency валюта счёта
+	 * @param ECurrency валюта счёта
 	 * @param passport паспорт клиента
 	 * @return созданную карту
 	 */
-	public Card createCard(Currency currency, Passport passport) {
+	public Card createCard(ECurrency ECurrency, Passport passport) {
 		String cardNumber = String.format("%016d", this.getNewCardNumber());
 		Client<? extends Account> client = this.getClient(passport);
-		SavingAccount account = new SavingAccount(currency, client.getNumber());
+		SavingAccount account = new SavingAccount(ECurrency, client.getNumber());
 		client.putAccount(account);
 		client.putSecret(new Pin("1234"));
 		return new Card(cardNumber, client.getNumber(), account.getNumber());
 	}
 
 	public Card createCard(Passport passport) {
-		return createCard(Currency.RUR, passport);
+		return createCard(ECurrency.RUR, passport);
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class Bank {
 	 * @param authMethod   Способ аутентификации
 	 * @return true в случае успеха
 	 */
-	public boolean authentication(long clientNumber, AuthMethod authMethod) {
+	public boolean authentication(long clientNumber, IAuthMethod authMethod) {
 		// Делаем обход по значениям
 		for (Client<? extends Account> client : clients.values()) {
 			if (client.getNumber() == clientNumber) {

@@ -1,6 +1,7 @@
 package ru.sbrf.atm.client;
 
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 /**
  * Создаёт карту, которая содержит номер счета и номер клинта которому принаджлежит.
@@ -8,6 +9,7 @@ import lombok.Getter;
  * Если не указывать номер клиента в банке, то создатся новый номер клиента.
  */
 
+@Component
 @Getter
 public class Card {
 

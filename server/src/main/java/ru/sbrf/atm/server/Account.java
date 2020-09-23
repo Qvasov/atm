@@ -1,6 +1,7 @@
 package ru.sbrf.atm.server;
 
 import lombok.Getter;
+import ru.sbrf.atm.enums.ECurrency;
 
 public abstract class Account {
     private long accountNumbers;
@@ -12,13 +13,13 @@ public abstract class Account {
     @Getter
     private long balanceKop;
     @Getter
-    private final Currency currency;
+    private final ru.sbrf.atm.enums.ECurrency ECurrency;
 
-    public Account(Currency currency, long ownerNumber) {
+    public Account(ECurrency ECurrency, long ownerNumber) {
         this.number = String.format("%020d", this.getNewAccountNumber());
         this.balanceRub = 0;
         this.balanceKop = 0;
-        this.currency = currency;
+        this.ECurrency = ECurrency;
         this.ownerNumber = ownerNumber;
     }
 

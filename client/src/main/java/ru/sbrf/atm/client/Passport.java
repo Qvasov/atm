@@ -1,11 +1,13 @@
 package ru.sbrf.atm.client;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Component
 @AllArgsConstructor
 public class Passport {
 	@NotNull

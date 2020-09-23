@@ -2,7 +2,9 @@ package ru.sbrf.atm.server;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
+@Component
 @AllArgsConstructor
 public class Secret {
 	@Getter

@@ -1,16 +1,10 @@
 package ru.sbrf.atm;
 
-import ru.sbrf.atm.client.ATM;
-import ru.sbrf.atm.client.Passport;
-import ru.sbrf.atm.client.User;
-import ru.sbrf.atm.client.method.Pin;
-import ru.sbrf.atm.interfaces.AuthMethod;
+import client.ATM;
+import client.Passport;
+import client.User;
+import client.method.Pin;
 import ru.sbrf.atm.server.Bank;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class Main {
 	public static void main(String[] args) {
